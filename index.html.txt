@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Recognition Example</title>
+</head>
+<body>
+    <h1>Voice Recognition</h1>
+    <button onclick="startListening()">Start Listening</button>
+    <p id="output">Say something...</p>
+
+    <script>
+        // Check if SpeechRecognition is available
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US'; // Set the language
+            recognition.continuous = false; // Stop listening after a single command
+            recognition.interimResults = false; // Show only the final result
+
+            // When the recognition starts
+            recognition.onstart = function() {
+                console.log("Listening...");
+                document.getElementById('output').textContent = "Listening...";
+            };
+
+            // When speech is detected and results are available
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                console.log("You said:", transcript);
+                document.getElementById('output').textContent = "You said: " + transcript;
+
+                // If the command matches, perform an action
+                if (transcript.toLowerCase().includes("hello")) {
+                    alert("Hello to you too!");
+                }
+            };
+
+            // If there's an error with the recognition
+            recognition.onerror = function(event) {
+                console.error("Error occurred: ", event.error);
+                document.getElementById('output').textContent = "Error: " + event.error;
+            };
+
+            function startListening() {
+                recognition.start();
+            }
+
+        } else {
+            alert("Speech Recognition is not supported in this browser.");
+        }
+    </script>
+</body>
+</html>
